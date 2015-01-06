@@ -1,7 +1,7 @@
 # Github mgmt
 
 A Python script that creates teams in an organisation, gives each team a
-repository with the same name as the team, and adds members.
+repository with the same name as the team, and adds members. Teams to be created and members are read from a CSV file.
 
 ## Prerequisites
 
