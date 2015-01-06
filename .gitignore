@@ -1,0 +1,9 @@
+# Ignore Github credentials file
+credentials
+
+# Rope folder
+.ropeproject
+
+# Compiled Python code
+*.pyc
+
