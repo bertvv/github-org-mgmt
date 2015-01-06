@@ -1,5 +1,5 @@
-# Ignore Github credentials file
-credentials
+# Ignore config file (contains password)
+config
 
 # Rope folder
 .ropeproject
