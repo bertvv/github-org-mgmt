@@ -2,4 +2,13 @@
   "user": "horace",
   "password": "letmein",
   "organisation": "dharma_initiative"
+  "repo_access": "push",
+  "repo_config": {
+    "private": true,
+    "has_issues": true,
+    "has_wiki": true,
+    "has_downloads": true,
+    "auto_init": true,
+    "gitignore_template": "Java"
+  }
 }
