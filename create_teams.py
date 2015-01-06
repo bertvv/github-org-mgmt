@@ -9,9 +9,11 @@ import csv
 def read_teams_from_csv(github, csvfile='users.csv'):
     """Read all teams and their users from the specified CSV file.
     A dictionary is returned with team names as key and a list of the team
-    member's login names as values e.g.
+    members (NamedUser objects) as values e.g.
 
-      {'prj1': ['alice', 'dan'], 'prj2': ['bob', 'cathy']}
+      {'prj1': [alice, dan], 'prj2': [bob, cathy]}
+
+    If a member does not exist, an exception is raised and the program aborts.
     """
 
     with open('users.csv') as userfile:
