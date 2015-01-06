@@ -63,6 +63,7 @@ def add_teams_to_org(organisation, teams, config):
     for team_name in teams.keys():
         print "^_^ %s ^_^" % team_name
         team = organisation.create_team(team_name)
+        team.edit(team_name, permission=config['repo_access'])
         repo = organisation.create_repo(team_name, **repo_config)
         team.add_to_repos(repo)
         add_members_to_team(team, teams[team_name])
@@ -113,4 +114,6 @@ print "Fetching users and teams from CSV. This may take a while..."
 teams = read_teams_from_csv(github)
 add_teams_to_org(organisation, teams, config)
 
+# WARNING!!! This deletes all teams starting with 'p1g' from the organisation
+# THIS CANNOT BE UNDONE, so leave in comment unless you really want this.
 # delete_teams_from_org(organisation, 'p1g')
