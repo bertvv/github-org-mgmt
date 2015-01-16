@@ -21,16 +21,10 @@ if num_args != 1:
 # Check whether the name prefix is long enough.
 prefix = argv[1]
 
-if len(prefix) < MIN_PREFIX_LENGTH:
-    print "Team name prefix is very short. This implies that a lot of teams"
-    print "may be deleted. Please use a prefix of at least %s characters" \
-        % MIN_PREFIX_LENGTH
-    sys.exit(1)
-
 # Read config, fetch organization
 config = org.read_config()
 github = Github(config['user'], config['password'])
 organisation = github.get_organization(config['organisation'])
 
-# DELETE the suckers
+# DELETE the teams
 org.delete_teams_from_org(organisation, prefix)
