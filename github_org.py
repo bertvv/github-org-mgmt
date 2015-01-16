@@ -102,6 +102,7 @@ def delete_teams_from_org(organisation, prefix):
     print 'and their repositories from the organisation.'
     print '!!! THIS CANNOT BE UNDONE !!!'
     print '=' * 80
+    print 'Teams to be deleted:'
     print ', '.join([team.name for team in teams_to_delete])
     print '=' * 80
     print 'Type in the prefix again to confirm: '
@@ -114,8 +115,8 @@ def delete_teams_from_org(organisation, prefix):
 
     for team in teams_to_delete:
             print "Deleting %s" % team.name
-            #delete_team_repo_from_org(organisation, team.name)
-            #team.delete()
+            delete_team_repo_from_org(organisation, team.name)
+            team.delete()
 
 
 def delete_team_repo_from_org(organisation, repo_name):
