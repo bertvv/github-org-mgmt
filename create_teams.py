@@ -2,7 +2,7 @@
 # coding=utf8
 
 import sys
-from github_org import GithubOrganisationManager as OrgMgr
+from github_org import GithubOrganizationManager as OrgMgr
 from getopt import getopt, GetoptError
 
 #
@@ -53,5 +53,5 @@ print "Fetching users and teams from %s. This may take a while..." \
     % user_file
 teams = mgr.read_teams_from_csv(user_file)
 
-print "Adding teams to organisation"
-#mgr.add_teams_to_org(teams)
+print "Adding teams to organization"
+mgr.add_teams_to_org(teams)

@@ -6,15 +6,15 @@ import csv
 from github import Github
 
 
-class GithubOrganisationManager:
+class GithubOrganizationManager:
     __slots__ = []
     MIN_PREFIX_LENGTH = 3
 
     def __init__(self, config_file_name):
         self._config = self.read_config(config_file_name)
         self._github = Github(self._config['user'], self._config['password'])
-        self._organisation = \
-            self._github.get_organization(self._config['organisation'])
+        self._organization = \
+            self._github.get_organization(self._config['organization'])
 
     def read_teams_from_csv(self, csvfile='users.csv'):
         """Read all teams and their users from the specified CSV file.
@@ -40,7 +40,7 @@ class GithubOrganisationManager:
 
             for row in userlist:
                 login = row[header.index('login')]
-                user = self.github.get_user(login)
+                user = self._github.get_user(login)
                 team_name = row[header.index('team')]
 
                 if(team_name not in teams):
@@ -68,15 +68,15 @@ class GithubOrganisationManager:
             raise SystemExit
 
     def add_teams_to_org(self, teams):
-        """Adds the specified teams to the organisation, including team
+        """Adds the specified teams to the organization, including team
         members"""
         repo_config = self._config['repo_config']
 
         for team_name in teams.keys():
             print "^_^ %s ^_^" % team_name
-            team = self.organisation.create_team(team_name)
+            team = self._organization.create_team(team_name)
             team.edit(team_name, permission=self._config['repo_access'])
-            repo = self.organisation.create_repo(team_name, **repo_config)
+            repo = self._organization.create_repo(team_name, **repo_config)
             team.add_to_repos(repo)
             self.add_members_to_team(team, teams[team_name])
 
@@ -89,7 +89,7 @@ class GithubOrganisationManager:
 
     def delete_teams_from_org(self, prefix):
         """Delete all teams whose name starts with the specified prefix from
-        the organisation. This also deletes any repository with the same name
+        the organization. This also deletes any repository with the same name
         as the team, if it exists. THIS CANNOT BE UNDONE!"""
 
         assert len(prefix) >= self.MIN_PREFIX_LENGTH, \
@@ -97,9 +97,7 @@ class GithubOrganisationManager:
              "may be deleted. Please use a prefix of at least %s characters") \
             % self.MIN_PREFIX_LENGTH
 
-        teams_to_delete = self.get_teams_starting_with(
-            self.organisation,
-            prefix)
+        teams_to_delete = self.get_teams_starting_with(prefix)
 
         if len(teams_to_delete) == 0:
             print "No teams start with %s, bailing out" % prefix
@@ -108,7 +106,7 @@ class GithubOrganisationManager:
         print '=' * 80
         print '!!! WARNING WARNING WARNING !!!'
         print "This deletes all teams starting with prefix %s" % prefix
-        print 'and their repositories from the organisation.'
+        print 'and their repositories from the organization.'
         print '!!! THIS CANNOT BE UNDONE !!!'
         print '=' * 80
         print 'Teams to be deleted:'
@@ -128,18 +126,18 @@ class GithubOrganisationManager:
                 team.delete()
 
     def delete_team_repo_from_org(self, repo_name):
-        """Delete the repository with the specified name from the organisation.
+        """Delete the repository with the specified name from the organization.
         If the repository does not exist, a warning is printed"""
 
         try:
-            repo = self.organisation.get_repo(repo_name)
+            repo = self._organization.get_repo(repo_name)
             repo.delete()
         except:
             print u"    Repo ‘%s’ already gone. Ignoring..." % repo_name
 
     def get_teams_starting_with(self, prefix):
         teams = []
-        for team in self.organisation.get_teams():
+        for team in self._organization.get_teams():
             if team.name.startswith(prefix):
                 teams.append(team)
         return teams
