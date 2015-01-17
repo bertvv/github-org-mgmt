@@ -1,7 +1,7 @@
 {
   "user": "horace",
   "password": "letmein",
-  "organisation": "dharma_initiative"
+  "organization": "dharma_initiative"
   "repo_access": "push",
   "repo_config": {
     "private": true,
