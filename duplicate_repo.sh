@@ -36,6 +36,11 @@ dest_repo=p1g10
 git clone "git@github.com:${org}/${source_repo}.git"
 
 cd ${source_repo}
-git remote remove origin
-git remote add origin "git@github.com:${org}/${dest_repo}.git"
-# git push origin --mirror
+branches=$(git branch -a | grep remotes | grep -v HEAD | grep -v master)
+
+for branch in ${branches}; do
+  git branch --track "${branch##*/}" "${branch}"
+done
+
+git remote add destination "git@github.com:${org}/${dest_repo}.git"
+ git push destination --mirror
