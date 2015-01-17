@@ -33,6 +33,36 @@ Fetching users and teams from users.csv. This may take a while...
     dave
 ```
 
+## Initializing repositories
+
+You can specify in the configuration to initialize new repositories with a
+`README.md` and a `.gitignore`. However, if you already want to add some code,
+files, etc., use the `duplicate_repo.sh` script.
+
+Currently, the script doesn't accept command line arguments, so you will need
+to edit it in order to use it in your situation. For example:
+
+```Bash
+org=myorganization
+source_repo=template-repo
+dest_repo_prefix=project
+from=5
+to=20
+```
+
+These settings would duplicate repository `template-repo` from organization
+`myorganization` into new repositories, named `project05`, `project06`, ...,
+`project20`.
+
+A few assumptions:
+
+* The target repositories exist (e.g. created by `create_teams.py`) and are
+    completely empty (config file has `auto_init` set to `false`).
+* You have the necessary access rights to all repositories
+* Target repository names adhere to naming policy `prefixNN` with `prefix` the
+    first part of the name that is common to all repos, and `NN` a number
+    consisting of exactly two digits (i.e. from `01` to `99`).
+
 ## Delete teams and their repository
 
 When preparing for the next semester, it may be necessary to delete all repositories from the previous one. The `delete_teams.py` script will delete all teams with a name starting with a specified prefix from the organization, including any repository with the same name.
@@ -68,5 +98,14 @@ All feedback is welcome! You can use the issue tracker to submit bugs, ideas, et
 This code is released under the 2-clause BSD license.
 
 ```
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ```
