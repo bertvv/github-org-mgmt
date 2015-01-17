@@ -22,7 +22,7 @@ def usage():
 #
 # Parse command line
 #
-config_file = 'config'
+config_file = 'ghorg.conf'
 
 try:
     opts, args = getopt(sys.argv[1:], "hc:", ['help', 'config='])

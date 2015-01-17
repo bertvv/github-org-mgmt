@@ -19,7 +19,7 @@ def usage():
 #
 # Parse command line
 #
-config_file = 'config'
+config_file = 'ghorg.conf'
 user_file = 'users.csv'
 
 try:
