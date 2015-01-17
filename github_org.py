@@ -16,7 +16,7 @@ class GithubOrganizationManager:
         self._organization = \
             self._github.get_organization(self._config['organization'])
 
-    def read_teams_from_csv(self, csvfile='users.csv'):
+    def read_teams_from_csv(self, csvfile):
         """Read all teams and their users from the specified CSV file.
         A dictionary is returned with team names as key and a list of the team
         members (NamedUser objects) as values e.g.
@@ -53,9 +53,9 @@ class GithubOrganizationManager:
 
         return teams
 
-    def read_config(self, config_file_name='config'):
+    def read_config(self, config_file_name='ghorg.conf'):
         """Read the configuration from the specified file.
-        The file should be in JSON format. See ‘config.example’.
+        The file should be in JSON format. See ‘ghorg.conf.example’.
         """
         try:
             with open(config_file_name) as config_file:
