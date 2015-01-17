@@ -1,17 +1,16 @@
-# Github mgmt
+# A few scripts for managing a Github organization
 
-A Python script that creates teams in an organisation, gives each team a
-repository with the same name as the team, and adds members. Teams to be created and members are read from a CSV file.
+I use Github for setting up repositories for students working on a programming or system engineering project. We have lots of students (hundreds), typically working in groups of four. That means that creating repositories and assigning users to them manually is not feasible. So I created these scripts to automate the process of setting up (and tearing down) repositories for our students.
 
 ## Prerequisites
 
-The script uses the [PyGithub](http://jacquev6.net/PyGithub/v1/introduction.html) library to use the Github API v3.
+The script needs the [PyGithub](http://jacquev6.net/PyGithub/v1/introduction.html) library to use the Github API v3.
 
-## Usage
+## Creating repositories and adding users
 
-First, create a configuration file called `config`. See [config.example](config.example) for an example. Copy it over and adapt to your own situation. The configuration should be in JSON format and contains a.o. user credentials. For this reason, the `config` file will be ignored by Git.
+First, create a configuration file called `ghorg.conf`. See [ghorg.conf.example](ghorg.conf.example) for an example. Copy it over and adapt to your own situation. The configuration should be in JSON format and contains a.o. user credentials. For this reason, all files with extension `.conf` will be ignored by Git.
 
-Next, create a CSV file `users.csv` (currently still hard coded) with two columns containing team names and login names of members. The file should have a header row containing "login" and "team". Order of rows and columns is irrelevant.
+Next, create a CSV file with two columns containing team names and login names of members. The file should have a header row containing "login" and "team". Order of rows and columns is irrelevant.
 
 ```csv
 login,team
@@ -23,9 +22,9 @@ charlie,project1
 
 Then, run the script:
 
-```
-$ python create_teams.py
-Fetching users and teams from CSV. This may take a while...
+```ShellSession
+$ ./create_teams.py users.csv
+Fetching users and teams from users.csv. This may take a while...
 ^_^ project1 ^_^
     alice
     charlie
@@ -34,23 +33,40 @@ Fetching users and teams from CSV. This may take a while...
     dave
 ```
 
+## Delete teams and their repository
+
+When preparing for the next semester, it may be necessary to delete all repositories from the previous one. The `delete_teams.py` script will delete all teams with a name starting with a specified prefix from the organization, including any repository with the same name.
+
+**!!! WARNING !!! This is a destructive operation that cannot be undone! See disclaimer below.**
+
+```ShellSession
+$ ./delete_teams.py p1g
+================================================================================
+!!! WARNING WARNING WARNING !!!
+This deletes all teams starting with prefix p1g
+and their repositories from the organization.
+!!! THIS CANNOT BE UNDONE !!!
+================================================================================
+Teams to be deleted:
+p1g01 p1g02 p1g03 p1g04 p1g05 p1g06 p1g07 p1g08 p1g09 p1g10 p1g11 p1g12 p1g13 p1g14 p1g15 
+================================================================================
+Type in the prefix again to confirm: 
+p1g
+Deleting p1g01
+Deleting p1g02
+[...]
+Deleting p1g15
+
+```
+
 ## Contribute
 
-Feedback is welcome, you can use the issue tracker to submit bugs, ideas, etc. Pull requests are also appreciated.
+All feedback is welcome! You can use the issue tracker to submit bugs, ideas, etc. Pull requests are also appreciated.
 
 ## License & disclaimer
 
-This code is public domain.
+This code is released under the 2-clause BSD license.
 
 ```
-THIS SOFTWARE IS PROVIDED BY THE AUTHOR AND THE CONTRIBUTORS "AS IS" AND ANY
-EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
-WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-DISCLAIMED. IN NO EVENT SHALL THE AUTHOR OR CONTRIBUTORS BE LIABLE FOR ANY
-DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
-(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
-LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
-ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
-SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ```
