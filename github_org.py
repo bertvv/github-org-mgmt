@@ -12,7 +12,7 @@ class GithubOrganisationManager:
 
     def __init__(self, config_file_name):
         self._config = self.read_config(config_file_name)
-        self._github = Github(self.config['user'], self._config['password'])
+        self._github = Github(self._config['user'], self._config['password'])
         self._organisation = \
             self._github.get_organization(self._config['organisation'])
 
@@ -70,12 +70,12 @@ class GithubOrganisationManager:
     def add_teams_to_org(self, teams):
         """Adds the specified teams to the organisation, including team
         members"""
-        repo_config = self.config['repo_config']
+        repo_config = self._config['repo_config']
 
         for team_name in teams.keys():
             print "^_^ %s ^_^" % team_name
             team = self.organisation.create_team(team_name)
-            team.edit(team_name, permission=self.config['repo_access'])
+            team.edit(team_name, permission=self._config['repo_access'])
             repo = self.organisation.create_repo(team_name, **repo_config)
             team.add_to_repos(repo)
             self.add_members_to_team(team, teams[team_name])
