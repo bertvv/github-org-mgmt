@@ -29,18 +29,16 @@ set -o nounset # abort on unbound variable
 #{{{ Variables
 org=HoGentTIProjecten1
 source_repo=testrepo
-dest_repo=p1g10
+dest_repo=p1g20
 #}}}
 
 # Script proper
-git clone "git@github.com:${org}/${source_repo}.git"
+git clone --bare "git@github.com:${org}/${source_repo}.git"
 
-cd ${source_repo}
-branches=$(git branch -a | grep remotes | grep -v HEAD | grep -v master)
+cd "${source_repo}.git"
 
-for branch in ${branches}; do
-  git branch --track "${branch##*/}" "${branch}"
-done
+git push --mirror "git@github.com:${org}/${dest_repo}.git"
 
-git remote add destination "git@github.com:${org}/${dest_repo}.git"
- git push destination --mirror
+cd ..
+
+rm -rf "${source_repo}.git"
