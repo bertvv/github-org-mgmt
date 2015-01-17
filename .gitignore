@@ -1,8 +1,8 @@
-# Ignore config file (contains password)
-config
+# Ignore config files (contains password)
+*.conf
 
 # Ignore users csv
-users.csv
+*.csv
 
 # Rope folder
 .ropeproject
