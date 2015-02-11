@@ -51,6 +51,7 @@ mgr = OrgMgr(config_file)
 
 print "Fetching users and teams from %s. This may take a while..." \
     % user_file
+print "Failed users (if any):"
 teams = mgr.read_teams_from_csv(user_file)
 
 print "Adding teams to organization"

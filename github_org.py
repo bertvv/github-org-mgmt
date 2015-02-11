@@ -3,7 +3,8 @@
 
 import json
 import csv
-from github import Github
+from github import Github, NamedUser
+from github import GithubException
 
 
 class GithubOrganizationManager:
@@ -39,17 +40,20 @@ class GithubOrganizationManager:
             teams = {}
 
             for row in userlist:
-                login = row[header.index('login')]
-                user = self._github.get_user(login)
                 team_name = row[header.index('team')]
+                login = row[header.index('login')]
+                try:
+                    user = self._github.get_user(login)
 
-                if(team_name not in teams):
-                    # Add a new key to the teams dict, and
-                    # add the first user to the member list
-                    teams[team_name] = [user]
-                else:
-                    # Append user name to existing team member list
-                    teams[team_name].append(user)
+                    if(team_name not in teams):
+                        # Add a new key to the teams dict, and
+                        # add the first user to the member list
+                        teams[team_name] = [user]
+                    else:
+                        # Append user name to existing team member list
+                        teams[team_name].append(user)
+                except GithubException:
+                    print "%s,%s" % (login, team_name)
 
         return teams
 
@@ -85,7 +89,19 @@ class GithubOrganizationManager:
 
         for member in members:
             print "    %s" % member.login
-            team.add_to_members(member)
+            self.__pygithub_add_membership(team, member)
+
+    def __pygithub_add_membership(self, team, member):
+        """
+        :calls: `PUT /teams/:id/memberships/:user
+          <http://developer.github.com/v3/orgs/teams>`_
+        :param member: :class:`github.Nameduser.NamedUser`
+        :rtype: None
+        """
+        assert isinstance(member, NamedUser.NamedUser), member
+        headers, data = team._requester.requestJsonAndCheck(
+            "PUT", team.url + "/memberships/" + member._identity
+        )
 
     def delete_teams_from_org(self, prefix):
         """Delete all teams whose name starts with the specified prefix from
