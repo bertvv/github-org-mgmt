@@ -18,7 +18,7 @@ _EOF_
 
 #}}}
 #{{{ Variables
-repo_regex='[ag]_'
+repo_regex='ops-a'
 repos=$(./list_repos.py | grep "${repo_regex}")
 local_dir="${HOME}/prj_repos"
 #}}}
@@ -32,6 +32,6 @@ fi
 cd "${local_dir}"
 
 for repo in ${repos}; do
-  git clone --bare "git@github.com:HoGentTIN/${repo}.git"
+  git clone "git@github.com:HoGentTIN/${repo}.git"
 done
 
