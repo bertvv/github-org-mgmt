@@ -2,17 +2,15 @@
 #
 # Author: Bert Van Vreckem <bert.vanvreckem@gmail.com>
 #
-# 
 
-set -o errexit # abort on nonzero exitstatus
 set -o nounset # abort on unbound variable
 
 #{{{ Variables
 org=HoGentTIProjecten1
 source_repo=testrepo
-dest_repo_prefix=p1g
-from=49
-to=72
+dest_repo_prefix=p1s
+from=01
+to=80
 
 vpp_name=testRepo
 #}}}
@@ -43,6 +41,7 @@ cd "${source_repo}.git"
 
 # Push the bare repository back to Github under the new name
 for i in $(seq -f "%02g" ${from} ${to}); do
+  echo "--- ${dest_repo_prefix}${i} ---"
   git push --mirror "git@github.com:${org}/${dest_repo_prefix}${i}.git"
 done
 cd ..
