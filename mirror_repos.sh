@@ -18,9 +18,10 @@ _EOF_
 
 #}}}
 #{{{ Variables
-repo_regex='ops-a'
-repos=$(./list_repos.py | grep "${repo_regex}")
+repo_regex='p1g'
+repos=$(./list_repos.py -c project1.conf | grep "${repo_regex}")
 local_dir="${HOME}/prj_repos"
+org=HoGentTIProjecten1
 #}}}
 
 # Script proper
@@ -32,6 +33,12 @@ fi
 cd "${local_dir}"
 
 for repo in ${repos}; do
-  git clone "git@github.com:HoGentTIN/${repo}.git"
+  git clone "git@github.com:${org}/${repo}.git"
+  pushd "${repo}"
+  for branch in  $(git branch -a | grep remotes | grep -v HEAD | grep -v master); do
+    git branch --track "${branch##*/}" "${branch}"
+  done
+  git fetch --all
+  popd
 done
 
