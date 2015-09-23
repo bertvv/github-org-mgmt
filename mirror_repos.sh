@@ -31,6 +31,7 @@ fi
 repo_regex=$1
 repos=$(./list_repos.py | grep "${repo_regex}")
 local_dir="${HOME}/prj_repos"
+org=HoGentTIN
 #}}}
 
 # Script proper
@@ -46,6 +47,12 @@ fi
 cd "${local_dir}"
 
 for repo in ${repos}; do
-  git clone --bare "git@github.com:HoGentTIN/${repo}.git"
+  echo git clone --bare "git@github.com:${org}/${repo}.git"
+  #pushd "${repo}"
+  #for branch in  $(git branch -a | grep remotes | grep -v HEAD | grep -v master); do
+  #  git branch --track "${branch##*/}" "${branch}"
+  #done
+  #git fetch --all
+  #popd
 done
 
