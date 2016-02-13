@@ -1,0 +1,27 @@
+---
+# Organization name
+organization: example
+
+# User credentials. WARNING! This contains your password.
+# Don't put this under version control!
+user: horace
+password: letmein
+
+# Sequence of repos to be created for each team. Will be
+# prepended with the team name
+repos:
+  - a
+  - b
+
+# Default repository access for team members.
+# One of 'pull', 'push', or 'admin'
+repo_access: push
+
+# Several settings for creating a repo.
+repo_config:
+  private: false
+  has_issues: true
+  has_wiki: true
+  has_downloads: true
+  auto_init: false
+  gitignore_template: ''
