@@ -80,8 +80,14 @@ class GithubOrganizationManager:
             print "^_^ %s ^_^" % team_name
             team = self._organization.create_team(team_name)
             team.edit(team_name, permission=self._config['repo_access'])
-            repo = self._organization.create_repo(team_name, **repo_config)
-            team.add_to_repos(repo)
+
+            # Create 3 repos for each team:
+            for rname in ['Java', 'JavaWeb', 'DotNet']:
+                repo_name = team_name + rname
+                print "    Repo: %s" % repo_name
+                repo = self._organization.create_repo(repo_name, **repo_config)
+                team.add_to_repos(repo)
+
             self.add_members_to_team(team, teams[team_name])
 
     def add_members_to_team(self, team, members):
@@ -151,9 +157,53 @@ class GithubOrganizationManager:
         except:
             print u"    Repo ‘%s’ already gone. Ignoring..." % repo_name
 
+    def delete_repos_from_org(self, prefix):
+        """Delete all teams whose name starts with the specified prefix from
+        the organization. This also deletes any repository with the same name
+        as the team, if it exists. THIS CANNOT BE UNDONE!"""
+
+        assert len(prefix) >= self.MIN_PREFIX_LENGTH, \
+            ("Team name prefix is very short. This implies that a lot of teams"
+             "may be deleted. Please use a prefix of at least %s characters") \
+            % self.MIN_PREFIX_LENGTH
+
+        repos_to_delete = self.get_repos_starting_with(prefix)
+
+        if len(repos_to_delete) == 0:
+            print "No repos start with %s, bailing out" % prefix
+            return
+
+        print '=' * 80
+        print '!!! WARNING WARNING WARNING !!!'
+        print "This deletes all repos starting with prefix %s" % prefix
+        print 'the organization.'
+        print '!!! THIS CANNOT BE UNDONE !!!'
+        print '=' * 80
+        print 'Repos to be deleted:'
+        print ', '.join([repo.name for repo in repos_to_delete])
+        print '=' * 80
+        print 'Type in the prefix again to confirm: '
+
+        choice = raw_input().lower()
+
+        if choice != prefix:
+            print 'Confirmation failed, bailing out.'
+            return
+
+        for repo in repos_to_delete:
+            print "Deleting %s" % repo.name
+            repo.delete()
+
     def get_teams_starting_with(self, prefix):
         teams = []
         for team in self._organization.get_teams():
             if team.name.startswith(prefix):
                 teams.append(team)
         return teams
+
+    def get_repos_starting_with(self, prefix):
+        repos = []
+        for repo in self._organization.get_repos():
+            if repo.name.startswith(prefix):
+                repos.append(repo)
+        return repos
