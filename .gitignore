@@ -1,5 +1,5 @@
 # Ignore config files (contains password)
-*.conf
+*conf.yml
 
 # Ignore users csv
 *.csv
