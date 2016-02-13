@@ -6,6 +6,10 @@ I use Github for setting up repositories for students working on a programming o
 
 The script needs the [PyGithub](http://jacquev6.net/PyGithub/v1/introduction.html) library to use the Github API v3.
 
+```ShellSession
+$ pip install PyGithub
+```
+
 ## Creating repositories and adding users
 
 First, create a configuration file called `ORGANIZATION-conf.yml` (with ORGANIZATION of course the name of your Github organization). See [example-conf.yml](example-conf.yml) for an example. Copy it over and adapt to your own situation. The configuration should be in Yaml format and contains a.o. user credentials. For this reason, all files that end with `-conf.yml` will be ignored by Git.
@@ -52,7 +56,28 @@ dave,project2
 charlie,project1
 ```
 
-Then, run the script:
+Then, run the script `gom.py` to create the teams. Running it without options gives a Usage message:
+
+```ShellSession
+$ ./gom.py
+Not enough arguments, expected at least 2
+Usage ./gom.py ORGANIZATION ACTION [OPTION]...
+
+ORGANIZATION is the name of the Github organization to be managed. You should
+  have a configuration file named 'ORGANIZATION-conf.yml' in the working
+  directory.
+
+ACTIONS
+
+  c, create-teams CSV     creates teams and members from the specified CSV file
+  d, delete-teams PREFIX  delete all teams and associated repos that have a
+                          name starting with PREFIX
+  l, list-repos           prints all repositories in the organization
+
+
+```
+
+Creating the teams goes like this:
 
 ```ShellSession
 $ ./gom.py example create-teams example-users.csv
@@ -75,7 +100,7 @@ Adding teams to organization
     - dave
 ```
 
-## Delete teams and their repository
+## Delete teams and their repositories
 
 It is possible to delete multiple teams and repositories from the organization. You specify a prefix and all teams and repositories with a name starting with that prefix will be deleted.
 
