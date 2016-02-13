@@ -8,7 +8,9 @@ user: horace
 password: letmein
 
 # Sequence of repos to be created for each team. Will be
-# prepended with the team name
+# prepended with the team name. If you leave this empty,
+# each team gets a repository with the team name:
+#   repos: []
 repos:
   - a
   - b
