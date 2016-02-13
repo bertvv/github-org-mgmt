@@ -8,7 +8,39 @@ The script needs the [PyGithub](http://jacquev6.net/PyGithub/v1/introduction.htm
 
 ## Creating repositories and adding users
 
-First, create a configuration file called `ghorg.conf`. See [ghorg.conf.example](ghorg.conf.example) for an example. Copy it over and adapt to your own situation. The configuration should be in JSON format and contains a.o. user credentials. For this reason, all files with extension `.conf` will be ignored by Git.
+First, create a configuration file called `ORGANIZATION-conf.yml` (with ORGANIZATION of course the name of your Github organization). See [example-conf.yml](example-conf.yml) for an example. Copy it over and adapt to your own situation. The configuration should be in Yaml format and contains a.o. user credentials. For this reason, all files that end with `-conf.yml` will be ignored by Git.
+
+```Yaml
+---
+# Organization name
+organization: example
+
+# User credentials. WARNING! This contains your password.
+# Don't put this under version control!
+user: horace
+password: letmein
+
+# Sequence of repos to be created for each team. Will be
+# prepended with the team name. If you leave this empty,
+# each team gets a repository with the team name:
+#   repos: []
+repos:
+  - a
+  - b
+
+# Default repository access for team members.
+# One of 'pull', 'push', or 'admin'
+repo_access: push
+
+# Several settings for creating a repo.
+repo_config:
+  private: false
+  has_issues: true
+  has_wiki: true
+  has_downloads: true
+  auto_init: false
+  gitignore_template: ''
+```
 
 Next, create a CSV file with two columns containing team names and login names of members. The file should have a header row containing "login" and "team". Order of rows and columns is irrelevant.
 
@@ -23,70 +55,56 @@ charlie,project1
 Then, run the script:
 
 ```ShellSession
-$ ./create_teams.py users.csv
-Fetching users and teams from users.csv. This may take a while...
-^_^ project1 ^_^
-    alice
-    charlie
-^_^ project2 ^_^
-    bob
-    dave
+$ ./gom.py example create-teams example-users.csv
+Fetching users and teams from example-users.csv. This may take a while.
+Failed users (if any):
+Adding teams to organization
+- team: project1
+  repos:
+    - project1a
+    - project1b
+  users:
+    - alice
+    - charlie
+- team: project2
+  repos:
+    - project2a
+    - project2b
+  users:
+    - bob
+    - dave
 ```
-
-## Initializing repositories
-
-You can specify in the configuration to initialize new repositories with a
-`README.md` and a `.gitignore`. However, if you already want to add some code,
-files, etc., use the `duplicate_repo.sh` script.
-
-Currently, the script doesn't accept command line arguments, so you will need
-to edit it in order to use it in your situation. For example:
-
-```Bash
-org=myorganization
-source_repo=template-repo
-dest_repo_prefix=project
-from=5
-to=20
-```
-
-These settings would duplicate repository `template-repo` from organization
-`myorganization` into new repositories, named `project05`, `project06`, ...,
-`project20`.
-
-A few assumptions:
-
-* The target repositories exist (e.g. created by `create_teams.py`) and are
-    completely empty (config file has `auto_init` set to `false`).
-* You have the necessary access rights to all repositories
-* Target repository names adhere to naming policy `prefixNN` with `prefix` the
-    first part of the name that is common to all repos, and `NN` a number
-    consisting of exactly two digits (i.e. from `01` to `99`).
 
 ## Delete teams and their repository
 
-When preparing for the next semester, it may be necessary to delete all repositories from the previous one. The `delete_teams.py` script will delete all teams with a name starting with a specified prefix from the organization, including any repository with the same name.
+It is possible to delete multiple teams and repositories from the organization. You specify a prefix and all teams and repositories with a name starting with that prefix will be deleted.
 
 **!!! WARNING !!! This is a destructive operation that cannot be undone! See disclaimer below.**
 
 ```ShellSession
-$ ./delete_teams.py p1g
+$ ./gom.py example delete-teams proj
 ================================================================================
 !!! WARNING WARNING WARNING !!!
-This deletes all teams starting with prefix p1g
+This deletes all teams starting with prefix team
 and their repositories from the organization.
 !!! THIS CANNOT BE UNDONE !!!
 ================================================================================
 Teams to be deleted:
-p1g01 p1g02 p1g03 p1g04 p1g05 p1g06 p1g07 p1g08 p1g09 p1g10 p1g11 p1g12 p1g13 p1g14 p1g15 
+project1, project2
+--------------------------------------------------------------------------------
+Repos to be deleted:
+project1a, project1b, project2a, project2b
 ================================================================================
 Type in the prefix again to confirm: 
-p1g
-Deleting p1g01
-Deleting p1g02
-[...]
-Deleting p1g15
-
+proj
+Deleting teams
+- project1
+- project2
+Deleting repos
+- project1a
+- project1b
+- project2a
+- project2b
 ```
 
 ## Contribute
