@@ -144,15 +144,17 @@ class GithubOrganizationManager:
     def delete_repos(self, repos_to_delete):
         """Delete specified repos. THIS CANNOT BE UNDONE!"""
 
+        print "Deleting repos"
         for repo in repos_to_delete:
-            print "Deleting %s" % repo.name
+            print "- %s" % repo.name
             repo.delete()
 
     def delete_teams(self, teams_to_delete):
         """Delete specified teams. THIS CANNOT BE UNDONE!"""
 
+        print "Deleting teams"
         for team in teams_to_delete:
-                print "Deleting %s" % team.name
+                print "- %s" % team.name
                 team.delete()
 
     def delete_teams_and_repos(self, prefix):
