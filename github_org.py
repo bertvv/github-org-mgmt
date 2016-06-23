@@ -84,7 +84,7 @@ class GithubOrganizationManager:
         members"""
         repo_config = self._config['repo_config']
 
-        for team_name in teams.keys():
+        for team_name in sorted(teams.keys()):
             print "- team: %s\n  repos:" % team_name
             team = self._organization.create_team(team_name)
             team.edit(team_name, permission=self._config['repo_access'])
