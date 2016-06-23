@@ -46,6 +46,8 @@ repo_config:
   gitignore_template: ''
 ```
 
+The value of `gitignore_template` should correspond with one of the templates in the "official" [collection on Github](https://github.com/github/gitignore).
+
 Next, create a CSV file with two columns containing team names and login names of members. The file should have a header row containing "login" and "team". Order of rows and columns is irrelevant.
 
 ```csv
