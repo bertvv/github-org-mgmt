@@ -10,3 +10,5 @@
 # Compiled Python code
 *.pyc
 
+# Directory containing user lists
+users/
