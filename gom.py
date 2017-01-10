@@ -66,6 +66,7 @@ def delete_teams(manager, options):
 
     manager.delete_teams_and_repos(prefix)
 
+
 def export_repos(manager, options):
     """Export repos starting with the specified prefix and their contributors as a CSV file"""
     if len(options) < 1:
@@ -74,6 +75,20 @@ def export_repos(manager, options):
         sys.exit(1)
     prefix = options[0]
     manager.export_repos_and_contributors(prefix)
+
+
+def add_members_to_team(manager, options):
+    """Adds members from a text file to a team"""
+    if len(options) < 2:
+        print "No team/member list specified!"
+        usage
+        sys.exit(1)
+    team_name = options[0]
+    user_file = options[1]
+    print "Fetching users from %s." % user_file
+    users = manager.read_members_from_txt(user_file)
+    manager.add_members_to_team(team, users)
+
 #
 # Script proper
 #
@@ -100,6 +115,8 @@ elif action == "create-teams" or action == "c":
     create_teams(manager, options)
 elif action == "delete-teams" or action == "d":
     delete_teams(manager, options)
+elif action == "add-members" or action == "a":
+    add_members_to_team(manager, options)
 else:
     print "Unknown action: %s" % action
     usage()

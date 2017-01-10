@@ -24,6 +24,15 @@ class GithubOrganizationManager:
             names.append('')
         return names
 
+    def read_members_from_txt(self, txtfile):
+        """Read member names from the specified text file (one member
+        per line). An array is returned with NamedUSer objects."""
+
+        with open(txtfile) as userfile:
+            user_names = userfile.readlines()
+            users = map(self._github.get_user, user_names)
+            return users
+
     def read_teams_from_csv(self, csvfile):
         """Read all teams and their users from the specified CSV file.
         A dictionary is returned with team names as key and a list of the team
