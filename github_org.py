@@ -196,3 +196,16 @@ class GithubOrganizationManager:
 
         self.delete_teams(teams_to_delete)
         self.delete_repos(repos_to_delete)
+
+    def export_repos_and_contributors(self, prefix):
+        """Export repos starting with the specfied prefix and contributors in CSV format"""
+        repos = self.get_repos_starting_with(prefix)
+        print u'repository,login,name,email'
+        for repo in repos:
+            contributors = repo.get_contributors()
+            for contributor in contributors:
+                print u'{0},{1},{2},{3}'.format(
+                        repo.name,
+                        contributor.login,
+                        contributor.name,
+                        contributor.email)

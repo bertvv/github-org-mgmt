@@ -24,6 +24,8 @@ ACTIONS
   d, delete-teams PREFIX  delete all teams and associated repos that have a
                           name starting with PREFIX
   l, list-repos           prints all repositories in the organization
+  x, export-teams PREFIX  export repositories starting with PREFIX and members
+                          as a CSV file
 
 """[1:-1] % sys.argv[0]
 
@@ -64,6 +66,14 @@ def delete_teams(manager, options):
 
     manager.delete_teams_and_repos(prefix)
 
+def export_repos(manager, options):
+    """Export repos starting with the specified prefix and their contributors as a CSV file"""
+    if len(options) < 1:
+        print "No name prefix of teams to export specified!"
+        usage()
+        sys.exit(1)
+    prefix = options[0]
+    manager.export_repos_and_contributors(prefix)
 #
 # Script proper
 #
@@ -84,6 +94,8 @@ manager = OrgMgr(organization_name)
 
 if action == "list-repos" or action == "l":
     list_repos(manager)
+elif action == "export-teams" or action == "x":
+    export_repos(manager, options)
 elif action == "create-teams" or action == "c":
     create_teams(manager, options)
 elif action == "delete-teams" or action == "d":
