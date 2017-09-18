@@ -12,3 +12,6 @@
 
 # Directory containing user lists
 users/
+
+# Directory containing "work in process"
+wip/
