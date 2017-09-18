@@ -145,6 +145,7 @@ class GithubOrganizationManager:
         If the repository does not exist, a warning is printed"""
 
         try:
+            print "Deleting repo: %s" % repo_name
             repo = self._organization.get_repo(repo_name)
             repo.delete()
         except:
@@ -157,6 +158,35 @@ class GithubOrganizationManager:
         for repo in repos_to_delete:
             print "- %s" % repo.name
             repo.delete()
+
+    def delete_repos_in_file(self, txtfile):
+        """Delete the repos enumerated in the specified text file (one per line).
+        THIS CANNOT BE UNDONE!"""
+
+        with open(txtfile) as repofile:
+            repos_to_delete = repofile.readlines()
+        repos_to_delete = [repo_name.strip() for repo_name in repos_to_delete]
+
+        print '=' * 80
+        print '!!! WARNING WARNING WARNING !!!'
+        print "This deletes all repos enumerated in file %s" % txtfile
+        print '!!! THIS CANNOT BE UNDONE !!!'
+        print '-' * 80
+        print 'Repos to be deleted:'
+        print ', '.join([repo_name for repo_name in repos_to_delete])
+        print '=' * 80
+        print 'Are you sure you want to do this? [yes/NO]'
+
+        choice = raw_input().lower()
+
+        if choice != 'yes':
+            print 'Confirmation failed, bailing out.'
+            print u'  Remark: Type ‘yes’ to confirm, not ‘y’'
+            return
+
+        for repo_name in repos_to_delete:
+            self.delete_repo(repo_name)
+
 
     def delete_teams(self, teams_to_delete):
         """Delete specified teams. THIS CANNOT BE UNDONE!"""

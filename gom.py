@@ -23,6 +23,7 @@ ACTIONS
   c, create-teams CSV     creates teams and members from the specified CSV file
   d, delete-teams PREFIX  delete all teams and associated repos that have a
                           name starting with PREFIX
+     delete-repos TXT     deletes all repos enumerated in the specified TXT file
   l, list-repos           prints all repositories in the organization
   x, export-teams PREFIX  export repositories starting with PREFIX and members
                           as a CSV file
@@ -36,6 +37,20 @@ def list_repos(manager):
     for repo in repos:
         print repo.name
 
+def list_teams(manager):
+    """List teams in the organization."""
+    teams = manager._organization.get_teams()
+    for team in teams:
+        print team.name
+
+def delete_repos(manager, options):
+    """Delete repositories enumerated in the specified text file"""
+    if len(options) < 1:
+        print "No file containing repo names specified!"
+        usage()
+        sys.exit(1)
+
+    manager.delete_repos_in_file(options[0])
 
 def create_teams(manager, options):
     """Create new teams and repositories"""
@@ -109,10 +124,14 @@ manager = OrgMgr(organization_name)
 
 if action == "list-repos" or action == "l":
     list_repos(manager)
+if action == "list-teams" or action == "l":
+    list_teams(manager)
 elif action == "export-teams" or action == "x":
     export_repos(manager, options)
 elif action == "create-teams" or action == "c":
     create_teams(manager, options)
+elif action == "delete-repos":
+    delete_repos(manager, options)
 elif action == "delete-teams" or action == "d":
     delete_teams(manager, options)
 elif action == "add-members" or action == "a":
