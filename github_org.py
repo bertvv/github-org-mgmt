@@ -188,6 +188,46 @@ class GithubOrganizationManager:
             self.delete_repo(repo_name)
 
 
+    def delete_team(self, team_name):
+        """Delete the team with the specified name from the organization.
+        If the team does not exist, a warning is printed"""
+
+        try:
+            print "Deleting team: %s" % team_name
+            team = self._organization.get_team(team_name)
+            team.delete()
+        except:
+            print u"    team ‘%s’ already gone. Ignoring..." % team_name
+
+    def delete_teams_in_file(self, txtfile):
+        """Delete the teams enumerated in the specified text file (one per line).
+        THIS CANNOT BE UNDONE!"""
+
+        with open(txtfile) as teamfile:
+            teams_to_delete = teamfile.readlines()
+        teams_to_delete = [team_name.strip() for team_name in teams_to_delete]
+
+        print '=' * 80
+        print '!!! WARNING WARNING WARNING !!!'
+        print "This deletes all teams enumerated in file %s" % txtfile
+        print '!!! THIS CANNOT BE UNDONE !!!'
+        print '-' * 80
+        print 'Teams to be deleted:'
+        print ', '.join([team_name for team_name in teams_to_delete])
+        print '=' * 80
+        print 'Are you sure you want to do this? [yes/NO]'
+
+        choice = raw_input().lower()
+
+        if choice != 'yes':
+            print 'Confirmation failed, bailing out.'
+            print u'  Remark: Type ‘yes’ to confirm, not ‘y’'
+            return
+
+        for team_name in teams_to_delete:
+            self.delete_team(team_name)
+
+
     def delete_teams(self, teams_to_delete):
         """Delete specified teams. THIS CANNOT BE UNDONE!"""
 

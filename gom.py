@@ -21,8 +21,9 @@ ORGANIZATION is the name of the Github organization to be managed. You should
 ACTIONS
 
   c, create-teams CSV     creates teams and members from the specified CSV file
-  d, delete-teams PREFIX  delete all teams and associated repos that have a
+  p, purge-teams PREFIX   delete all teams and associated repos that have a
                           name starting with PREFIX
+     delete-teams TXT     deletes all teams enumerated in the specified TXT file
      delete-repos TXT     deletes all repos enumerated in the specified TXT file
   l, list-repos           prints all repositories in the organization
   x, export-teams PREFIX  export repositories starting with PREFIX and members
@@ -52,6 +53,15 @@ def delete_repos(manager, options):
 
     manager.delete_repos_in_file(options[0])
 
+def delete_teams(manager, options):
+    """Delete teams enumerated in the specified text file"""
+    if len(options) < 1:
+        print "No file containing team names specified!"
+        usage()
+        sys.exit(1)
+
+    manager.delete_teams_in_file(options[0])
+
 def create_teams(manager, options):
     """Create new teams and repositories"""
     if len(options) < 1:
@@ -70,7 +80,7 @@ def create_teams(manager, options):
     manager.add_teams_to_org(teams)
 
 
-def delete_teams(manager, options):
+def purge_teams(manager, options):
     """Delete teams and their repos starting with the specified prefix"""
     if len(options) < 1:
         print "No name prefix of teams to delete specified!"
@@ -132,6 +142,8 @@ elif action == "create-teams" or action == "c":
     create_teams(manager, options)
 elif action == "delete-repos":
     delete_repos(manager, options)
+elif action == "purge-teams" or action == "p":
+    purge_teams(manager, options)
 elif action == "delete-teams" or action == "d":
     delete_teams(manager, options)
 elif action == "add-members" or action == "a":
