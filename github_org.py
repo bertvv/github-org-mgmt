@@ -3,8 +3,10 @@
 
 import yaml
 import csv
-from github import Github, NamedUser
+import github
+from github import Github
 from github import GithubException
+from github import UnknownObjectException
 
 
 class GithubOrganizationManager:
@@ -28,10 +30,28 @@ class GithubOrganizationManager:
         """Read member names from the specified text file (one member
         per line). An array is returned with NamedUSer objects."""
 
+        user_names = []
+        users = []
+        failed_users = []
         with open(txtfile) as userfile:
             user_names = userfile.readlines()
-            users = map(self._github.get_user, user_names)
-            return users
+        print "Reading users:"
+        for name in user_names:
+            # strip the \n from the right
+            name = name.rstrip()
+            print " - %s" % name
+            # Convert user name into Github NamedUser object
+            try:
+                user = self._github.get_user(name)
+                users.append(user)
+            except UnknownObjectException:
+                failed_users.append(name)
+
+        print "Failed users:"
+        for failed_user in failed_users:
+            print " - %s" % failed_user
+
+        return users
 
     def read_teams_from_csv(self, csvfile):
         """Read all teams and their users from the specified CSV file.
@@ -88,6 +108,57 @@ class GithubOrganizationManager:
                    "See e.g. org-conf.yml.example") % config_file_name
             raise SystemExit
 
+    def invite(self, users):
+        """
+        Invite the specified users to the organization
+        :param str user: Name of a user to invite
+        """
+        for user_name in users:
+            try:
+                user = self._github.get_user(user_name)
+                if not self._organization.has_in_members(user):
+                    print "%s\t\t1\t\t\tuitgenodigd" % user_name
+                    self.add_member_to_org(user)
+                else:
+                    print "%s\t\t\t1\t\treeds lid" % user_name
+            except GithubException:
+                print "%s\t1\t\t\t\tgebruiker niet gevonden" % user_name
+
+    def add_members_to_team(self, team, user_names):
+        """
+        Add the specified users to the specified team
+
+        :param team: :class:`github.Team`
+        :param user_names: list of str
+        :rtype: None
+        """
+
+        for user_name in user_names:
+            try:
+                user = self._github.get_user(user_name)
+                self.add_member_to_team(team, user)
+            except GithubException:
+                print "%s\tgebruiker niet gevonden" % user_name
+
+    def add_member_to_org(self, member):
+        """
+        Adds the specified NamedUser to the organization
+        :calls: `PUT /orgs/:org/memberships/:user
+                  <http://developer.github.com/v3/orgs/members>`_
+        :param member: :class:`github.NamedUser.NamedUser`
+        :rtype: None
+        """
+
+        assert isinstance(member, github.NamedUser.NamedUser), member
+        url_parameters = {
+            "role": "member",
+        }
+        headers, data = self._organization._requester.requestJsonAndCheck(
+            "PUT",
+            self._organization.url + "/memberships/" + member._identity,
+            parameters=url_parameters
+        )
+
     def add_teams_to_org(self, teams):
         """Adds the specified teams to the organization, including team
         members"""
@@ -107,24 +178,18 @@ class GithubOrganizationManager:
             print "  users:"
             self.add_members_to_team(team, teams[team_name])
 
-    def add_members_to_team(self, team, members):
-        """Adds the members, a list of NamedUsers, to the team"""
-
-        for member in members:
-            print "    - %s" % member.login
-            self.__pygithub_add_membership(team, member)
-
-    def __pygithub_add_membership(self, team, member):
+    def add_member_to_team(self, team, member):
         """
-        :calls: `PUT /teams/:id/memberships/:user
-          <http://developer.github.com/v3/orgs/teams>`_
-        :param member: :class:`github.Nameduser.NamedUser`
-        :rtype: None
+        Adds the specified member, a NamedUser, to the team
         """
-        assert isinstance(member, NamedUser.NamedUser), member
-        headers, data = team._requester.requestJsonAndCheck(
-            "PUT", team.url + "/memberships/" + member._identity
-        )
+        if team.has_in_members(member):
+            print "%s\thad al toegang" % member.login
+        elif not self._organization.has_in_members(member):
+            self.add_member_to_org(member)
+            print "%s\tuitgenodigd" % member.login
+        else:
+            print "%s\ttoegang gegeven" % member.login
+            team.add_to_members(member)
 
     def get_teams_starting_with(self, prefix):
         teams = []
@@ -132,6 +197,12 @@ class GithubOrganizationManager:
             if team.name.startswith(prefix):
                 teams.append(team)
         return teams
+
+    def get_team_by_name(self, team_name):
+        for team in self._organization.get_teams():
+            if team.name == team_name:
+                return team
+        raise Exception("Team %s not found" % team_name)
 
     def get_repos_starting_with(self, prefix):
         repos = []
@@ -148,7 +219,7 @@ class GithubOrganizationManager:
             print "Deleting repo: %s" % repo_name
             repo = self._organization.get_repo(repo_name)
             repo.delete()
-        except:
+        except GithubException:
             print u"    Repo ‘%s’ already gone. Ignoring..." % repo_name
 
     def delete_repos(self, repos_to_delete):
@@ -187,7 +258,6 @@ class GithubOrganizationManager:
         for repo_name in repos_to_delete:
             self.delete_repo(repo_name)
 
-
     def delete_team(self, team_name):
         """Delete the team with the specified name from the organization.
         If the team does not exist, a warning is printed"""
@@ -196,7 +266,7 @@ class GithubOrganizationManager:
             print "Deleting team: %s" % team_name
             team = self._organization.get_team(team_name)
             team.delete()
-        except:
+        except GithubException:
             print u"    team ‘%s’ already gone. Ignoring..." % team_name
 
     def delete_teams_in_file(self, txtfile):
@@ -226,7 +296,6 @@ class GithubOrganizationManager:
 
         for team_name in teams_to_delete:
             self.delete_team(team_name)
-
 
     def delete_teams(self, teams_to_delete):
         """Delete specified teams. THIS CANNOT BE UNDONE!"""
@@ -277,7 +346,8 @@ class GithubOrganizationManager:
         self.delete_repos(repos_to_delete)
 
     def export_repos_and_contributors(self, prefix):
-        """Export repos starting with the specfied prefix and contributors in CSV format"""
+        """Export repos starting with the specfied prefix and contributors in
+        CSV format"""
         repos = self.get_repos_starting_with(prefix)
         print u'repository,login,name,email'
         for repo in repos:
