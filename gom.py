@@ -118,7 +118,7 @@ def list_repos(manager):
     """
     repos = manager._organization.get_repos()
     for repo in repos:
-        print repo.name
+        print repo.size, repo.name
 
 
 def list_teams(manager):
