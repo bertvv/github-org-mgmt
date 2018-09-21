@@ -117,8 +117,10 @@ def list_repos(manager):
     List repositories in the organization.
     """
     repos = manager._organization.get_repos()
+    print "name,size,updated_at,pushed_at"
     for repo in repos:
-        print repo.size, repo.name
+        print "%s,%s,%s,%s" \
+                % (repo.name, repo.size, repo.updated_at, repo.pushed_at)
 
 
 def list_teams(manager):
