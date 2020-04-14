@@ -1,4 +1,4 @@
-#! /usr/bin/python
+#! /usr/bin/python2
 # coding=utf8
 # gom.py -- Command line tool for managing a Github organization
 
@@ -26,6 +26,7 @@ ACTIONS
      delete-teams TXT    deletes all teams enumerated in the specified TXT file
      delete-repos TXT    deletes all repos enumerated in the specified TXT file
   l, list-repos          prints all repositories in the organization
+  t, list-teams          prints all teams
   x, export-teams PREFIX export repositories starting with PREFIX and members
                          as a CSV file
 
@@ -128,8 +129,11 @@ def list_teams(manager):
     List teams in the organization.
     """
     teams = manager._organization.get_teams()
+    print "team,id,members_count,repos_count"
+
     for team in teams:
-        print team.name
+        print "%s,%s,%s,%s" % (team.name, team.id,
+                               team.members_count, team.repos_count)
 
 
 def purge_teams(manager, options):
@@ -193,7 +197,7 @@ elif action == "export-teams" or action == "x":
     export_repos(manager, options)
 elif action == "list-repos" or action == "l":
     list_repos(manager)
-elif action == "list-teams" or action == "l":
+elif action == "list-teams" or action == "t":
     list_teams(manager)
 elif action == "purge-teams" or action == "p":
     purge_teams(manager, options)

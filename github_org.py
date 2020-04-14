@@ -103,9 +103,9 @@ class GithubOrganizationManager:
                 config = yaml.load(config_file)
                 return config
         except IOError:
-            print ("Couldn't load configuration file ‘%s’. "
-                   "Maybe you should create it?\n"
-                   "See e.g. org-conf.yml.example") % config_file_name
+            print("Couldn't load configuration file ‘%s’. "
+                  "Maybe you should create it?\n"
+                  "See e.g. org-conf.yml.example") % config_file_name
             raise SystemExit
 
     def invite(self, users):
@@ -264,7 +264,7 @@ class GithubOrganizationManager:
 
         try:
             print "Deleting team: %s" % team_name
-            team = self._organization.get_team(team_name)
+            team = self._organization.get_team(int(team_name))
             team.delete()
         except GithubException:
             print u"    team ‘%s’ already gone. Ignoring..." % team_name
@@ -338,7 +338,7 @@ class GithubOrganizationManager:
 
         choice = raw_input().lower()
 
-        if choice != prefix:
+        if choice != prefix.lower():
             print 'Confirmation failed, bailing out.'
             return
 
