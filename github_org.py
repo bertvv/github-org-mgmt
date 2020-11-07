@@ -117,12 +117,12 @@ class GithubOrganizationManager:
             try:
                 user = self._github.get_user(user_name)
                 if not self._organization.has_in_members(user):
-                    print "%s\t\t1\t\t\tuitgenodigd" % user_name
+                    print "%s\t\t1\t\t\tinvited" % user_name
                     self.add_member_to_org(user)
                 else:
-                    print "%s\t\t\t1\t\treeds lid" % user_name
+                    print "%s\t\t\t1\t\talready a member" % user_name
             except GithubException:
-                print "%s\t1\t\t\t\tgebruiker niet gevonden" % user_name
+                print "%s\t1\t\t\t\tuser not found" % user_name
 
     def add_members_to_team(self, team, user_names):
         """
@@ -138,7 +138,7 @@ class GithubOrganizationManager:
                 user = self._github.get_user(user_name)
                 self.add_member_to_team(team, user)
             except GithubException:
-                print "%s\tgebruiker niet gevonden" % user_name
+                print "%s\tuser not found" % user_name
 
     def add_member_to_org(self, member):
         """
@@ -183,12 +183,12 @@ class GithubOrganizationManager:
         Adds the specified member, a NamedUser, to the team
         """
         if team.has_in_members(member):
-            print "%s\thad al toegang" % member.login
+            print "%s\talready has access" % member.login
         elif not self._organization.has_in_members(member):
             self.add_member_to_org(member)
-            print "%s\tuitgenodigd" % member.login
+            print "%s\tinvited" % member.login
         else:
-            print "%s\ttoegang gegeven" % member.login
+            print "%s\tgave access" % member.login
             team.add_to_members(member)
 
     def get_teams_starting_with(self, prefix):
