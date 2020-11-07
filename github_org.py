@@ -100,7 +100,7 @@ class GithubOrganizationManager:
         config_file_name = self._organization_name + "-conf.yml"
         try:
             with open(config_file_name) as config_file:
-                config = yaml.load(config_file)
+                config = yaml.load(config_file, Loader=yaml.FullLoader)
                 return config
         except IOError:
             print("Couldn't load configuration file ‘%s’. "
