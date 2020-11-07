@@ -16,7 +16,10 @@ class GithubOrganizationManager:
     def __init__(self, organization_name):
         self._organization_name = organization_name
         self._config = self.read_config()
-        self._github = Github(self._config['user'], self._config['password'])
+        if(self._config['token'] != ''):
+		self._github = Github(self._config['token'])
+	else:
+        	self._github = Github(self._config['user'], self._config['password'])
         self._organization = \
             self._github.get_organization(self._config['organization'])
 
