@@ -7,6 +7,13 @@ organization: example
 user: horace
 password: letmein
 
+token: xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx 
+# token: 
+# enter md5 token created by going to:
+# your account Setting --> Developer Settings --> Personal access tokens --> Generate new tokens
+# in your new token, you should select at least admin:org, admin:repo_hook,  admin:org_hook
+# if token is set, then the user/pass are ignored.
+
 # Sequence of repos to be created for each team. Will be
 # prepended with the team name. If you leave this empty,
 # each team gets a repository with the team name:
