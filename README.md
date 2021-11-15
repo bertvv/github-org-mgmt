@@ -4,10 +4,10 @@ I use Github for setting up repositories for students working on a programming o
 
 ## Prerequisites
 
-The script needs the [PyGithub](https://pygithub.github.io/PyGithub/v1/introduction.html) library to use the Github API v3.
+The script needs the [PyGithub v1.45](https://pygithub.readthedocs.io/) library to use the Github API v3.
 
 ```ShellSession
-$ pip install PyGithub
+$ pip2 install PyGithub==1.45
 ```
 
 ## Creating repositories and adding users
